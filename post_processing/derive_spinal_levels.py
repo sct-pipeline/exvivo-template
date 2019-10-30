@@ -54,17 +54,17 @@ def run_main(args):
 
         # fill im_continuous and im_mid
         for lb in lb_lst:
-            if (lb-1) in lb_lst:
-                z_min_lb, z_max_lb = z_top_dct[lb-1]+1, z_top_dct[lb]
-
+            if (lb+1) in lb_lst:
+                z_min_lb, z_max_lb = z_top_dct[lb+1]+1, z_top_dct[lb]
                 im_continuous.data[:,:,z_min_lb:z_max_lb+1] = lb * im_ctrl.data[:,:,z_min_lb:z_max_lb+1]
 
-                z_mid_lb = int(round((z_max_lb-z_min_lb)*1.0 / 2))
+                z_mid_lb = z_min_lb+int(round((z_max_lb-z_min_lb)*1.0 / 2))
                 im_mid.data[:,:,z_mid_lb] = lb * im_ctrl.data[:,:,z_mid_lb]
 
         # save outputs
         im_continuous.save(fname_continuous)
         im_mid.save(fname_mid)
+        del im_ctrl, im_continuous, im_mid
 
 
 if __name__ == '__main__':
