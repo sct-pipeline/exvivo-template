@@ -1,10 +1,10 @@
 #!/bin/bash
 #
-# XX
+# This script resample the PAM50 files to an input resolution.
 #
 # Usage:
 #   ./resample_PAM50.sh <resolution_mm> <ofolder>
-# Note: No "/" at the end of ofolder
+# Note: No / at the end of ofolder
 #
 # Example:
 #	./resample_PAM50.sh 0.08 PAM50_008
