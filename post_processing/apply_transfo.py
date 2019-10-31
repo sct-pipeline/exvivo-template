@@ -114,7 +114,7 @@ def run_main(args):
         os.makedirs(tmpfolder)
 
     # loop across subjects
-    for subj in os.listdir(ifolder)[:1]:
+    for subj in os.listdir(ifolder):
         # straighten image
         fname_im_straight = os.path.join(ifolder, subj, 't1', 't1_straight.nii.gz')
         # warping field from raw to preprocess space
@@ -123,7 +123,7 @@ def run_main(args):
         fname_warp_template = os.path.join(wfolder, subj+'_t1.mnc_corr.'+last_it.zfill(3)+'_f.xfm')
 
         # loop across derivative files
-        for deriv in ['seg', 'gmseg']: ###, 'labels']:
+        for deriv in ['seg']:  ####, 'gmseg', 'labels']:
             # apply transfo from raw to preprocess space
             fname_in = os.path.join(ifolder, subj, 't1', 't1_'+deriv+'.nii.gz')
             fname_prepro = os.path.join(tmpfolder, subj+'_'+deriv+'_prepro.nii.gz')
