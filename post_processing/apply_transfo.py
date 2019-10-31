@@ -21,7 +21,7 @@
 #           t1_straight.nii.gz          # straighten image
 #
 # Usage: python apply_transfo.py -i <ifolder>
-#                                   -wt <warping_field_template_folder>
+#                                   -w <warping_field_template_folder>
 #                                   -d <destination_file>
 #                                   -o <ofolder>
 #
@@ -76,19 +76,14 @@ def apply_transfo_minc(i, w, o):
 def convert_mnc_nii(mnc, nii):
     sct_convert.main(args=[
                             '-i', mnc,
-                            '-o', nii,
-                            '-v', '0'])
+                            '-o', nii])
 
 
-def copy_header(i, d, o):
+def set_orient(ref, i, i_tmp, o):
     sct_image.main(args=[
-                            '-i', i,
-                            '-copy-header', d
-                            '-o', o,
+                            '-i', ref,
+                            '-copy-header', i,
                             '-v', '0'])
-
-
-def set_orient(i, i_tmp, o):
     sct_image.main(args=[
                             '-i', i,
                             '-setorient-data', 'IAR',
@@ -119,16 +114,16 @@ def run_main(args):
         os.makedirs(tmpfolder)
 
     # loop across subjects
-    for subj in os.listdir(ifolder):
+    for subj in os.listdir(ifolder)[:1]:
         # straighten image
         fname_im_straight = os.path.join(ifolder, subj, 't1', 't1_straight.nii.gz')
         # warping field from raw to preprocess space
         fname_warp_prepro = os.path.join(ifolder, subj, 't1', 'warp_curve2straight.nii.gz')
         # warping field from preprocess to template space
-        fname_warp_template = os.path.join(wfolder, subj+'_t1.mnc'+last_it.zfill(3)+'_f.xfm')
+        fname_warp_template = os.path.join(wfolder, subj+'_t1.mnc_corr.'+last_it.zfill(3)+'_f.xfm')
 
         # loop across derivative files
-        for deriv in ['seg', 'gmseg', 'labels']:
+        for deriv in ['seg', 'gmseg']: ###, 'labels']:
             # apply transfo from raw to preprocess space
             fname_in = os.path.join(ifolder, subj, 't1', 't1_'+deriv+'.nii.gz')
             fname_prepro = os.path.join(tmpfolder, subj+'_'+deriv+'_prepro.nii.gz')
@@ -153,16 +148,11 @@ def run_main(args):
             convert_mnc_nii(mnc=fname_reg_mnc,
                             nii=fname_reg)
 
-            # copy header
-            fname_reg_header = os.path.join(tmpfolder, subj+'_'+deriv+'_reg_header.nii.gz')
-            copy_header(i=fname_dest,
-                        d=fname_reg,
-                        o=fname_reg_header)
-
             # set-orient-data and set-orient
             fname_reg_dIAR = os.path.join(tmpfolder, subj+'_'+deriv+'_reg_dIAR.nii.gz')
             fname_reg_out = os.path.join(ofolder, subj+'_'+deriv+'.nii.gz')
-            set_orient(i=fname_reg_header,
+            set_orient(ref=fname_dest,
+                        i=fname_reg,
                         i_tmp=fname_reg_dIAR,
                         o=fname_reg_out)
 
