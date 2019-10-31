@@ -47,7 +47,7 @@ def screenshot_w_seg(im_lst, seg_lst, cmap, fname_out_lst):
         plt.axis("off")
 
         i_zero, i_nonzero = np.where(seg==0.0), np.nonzero(seg)
-        cm = plt.get_cmap(cmap) 
+        cm = plt.get_cmap(cmap)
         img_jet = cm(plt.Normalize(vmin=0, vmax=1)(seg))
         img_jet[i_zero] = 0.0
         bkg_grey = plt.cm.binary_r(plt.Normalize(vmin=np.amin(im), vmax=np.amax(im))(im))
@@ -85,6 +85,7 @@ def run_main(args):
 
     im_lst, fname_out_lst = [], []
     im = Image(im_fname)
+    print(im.dim)
     for z in z_lst:
         im_lst.append(im.data[:, :, z])
         fname_out_lst.append(os.path.join(ofolder, str(z).zfill(3)+'.png'))
