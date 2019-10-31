@@ -8,7 +8,7 @@
 #
 # Usage: python derive_spinal_levels.py -i <ifolder>
 #
-# Example: python derive_spinal_levels.py -i ~/PAM50_008/
+# Example: python derive_spinal_levels.py -i ~/exvivo_template/
 #
 ##############################################################
 

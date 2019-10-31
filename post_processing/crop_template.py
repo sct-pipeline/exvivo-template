@@ -6,7 +6,7 @@
 #
 # Usage: python crop_template.py -i <ifolder> -o <ofolder>
 #
-# Example: python crop_template.py -i ~/PAM50_008/ -o ~/PAM50_008/crop/
+# Example: python crop_template.py -i ~/exvivo_template/ -o ~/exvivo_template/crop/
 #
 ##############################################################
 
@@ -14,7 +14,10 @@ import os
 import numpy as np
 import argparse
 
-import sct_utils as sct
+import sys
+sys.path.append(os.popen('echo $SCT_DIR').readlines()[0][:-1]+"/scripts")
+
+import sct_crop_image
 from spinalcordtoolbox.image import Image, zeros_like
 
 
@@ -45,13 +48,12 @@ def run_main(args):
 
     fname_top_labels = os.path.join(ifolder, 'template_label_top_spinal_levels.nii.gz')
     if os.path.isfile(fname_top_labels):
-        
 
         # get crop zlim
         im_top = Image(fname_top_labels)
         z_top_dct = get_label_z(im_top.data)
         lb_lst = list(z_top_dct.keys())
-        z_min, z_max = z_top_dct[min(lb_lst)]+1, z_top_dct[max(lb_lst)]
+        z_min, z_max = str(z_top_dct[min(lb_lst)]+1), str(z_top_dct[max(lb_lst)])
         del im_top
 
         # crop all images starting with "template_*"
@@ -60,10 +62,10 @@ def run_main(args):
                 fname_in = os.path.join(ifolder, f)
                 fname_out = os.path.join(ofolder, f)
 
-                sct.run(['sct_crop_image', '-i', fname_in,
-                            '-o', fname_out,
-                            '-zmin', z_min,
-                            '-zmax', z_max])
+                sct_crop_image.main(['-i', fname_in,
+                                        '-o', fname_out,
+                                        '-zmin', z_min,
+                                        '-zmax', z_max])
 
     else:
         print('Cannot find: '+fname_top_labels)
