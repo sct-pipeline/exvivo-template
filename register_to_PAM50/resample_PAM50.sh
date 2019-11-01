@@ -37,11 +37,14 @@ for file in "$pam50path"*.nii.gz; do
         # Resample
         if [[ $file == *m.nii.gz ]] || [[ $(basename "$file") == PAM50_t* ]] ;
         then
-            echo linear
             sct_resample -i $ofile -o $ofile -mm "$resolution"x"$resolution"x"$resolution"
         else
-            echo nn
             sct_resample -i $ofile -o $ofile -mm "$resolution"x"$resolution"x"$resolution" -x nn
+        fi
+        # Cubic-to-point
+        if [[ $file == PAM50_levels.nii.gz ]] || [[ $(basename "$file") == PAM50_label* ]] ;
+        then
+            sct_label_utils -i $ofile -o $ofile -cubic-to-point
         fi
     fi
 done
