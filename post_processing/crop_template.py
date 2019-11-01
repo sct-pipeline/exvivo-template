@@ -58,7 +58,7 @@ def run_main(args):
 
         # crop all images starting with "template_*"
         for f in os.listdir(ifolder):
-            if f.startswith("template_"):
+            if f.startswith("template"):
                 fname_in = os.path.join(ifolder, f)
                 fname_out = os.path.join(ofolder, f)
 
