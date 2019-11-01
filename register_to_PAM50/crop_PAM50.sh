@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # This script crops the resampled PAM50 around the SC,
-#	in the axial plane.
+#	in the axial plane, then from T3/T2.
 #
 # Usage:
 #   ./crop_PAM50.sh <axial_voxel_size> <ifolder> <ofolder>
@@ -26,8 +26,11 @@ for file in "$ifolder"/*.nii.gz; do
     echo "$file"
     ofile="$ofolder"/"$(basename "$file")"
     if [ ! -f $ofile ]; then
-        # Crop
+        # Crop in the axial plane
         sct_crop_image -i $file -o $ofile -m "$ofolder"/mask.nii.gz
+        # Crop from T3/T2
+        sct_crop_image -i $ofile -o $ofile -zmin 4050
+
     fi
 done
 
