@@ -25,6 +25,6 @@ for file in "$pam50path"*.nii.gz; do
     ofile="$ofolder"/"$(basename "$file")"
     if [ ! -f $ofile ]; then
         # Resample
-        sct_resample -i $ifile -o $ofile -mm "$resolution"x"$resolution"x"$resolution"
+        sct_resample -i $file -o $ofile -mm "$resolution"x"$resolution"x"$resolution"
     fi
 done
