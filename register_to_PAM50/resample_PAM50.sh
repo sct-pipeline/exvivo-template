@@ -28,12 +28,20 @@ sct_create_mask -i "$pam50path"/PAM50_centerline.nii.gz -p center -size 40 -f bo
 for file in "$pam50path"*.nii.gz; do
     echo "$file"
     ofile="$ofolder"/"$(basename "$file")"
-    if [ ! -f $ofile ]; then
+    if [ ! -f $ofile ];
+    then
         # Crop around the spinal cord
         sct_crop_image -i $file -o $ofile -m "$ofolder"/mask.nii.gz
         # Crop from T3/T2
         sct_crop_image -i $ofile -o $ofile -zmin 648
         # Resample
-        sct_resample -i $ofile -o $ofile -mm "$resolution"x"$resolution"x"$resolution"
+        if [[ $file == *m.nii.gz ]] || [[ $(basename "$file") == PAM50_t* ]] ;
+        then
+            echo linear
+            sct_resample -i $ofile -o $ofile -mm "$resolution"x"$resolution"x"$resolution"
+        else
+            echo nn
+            sct_resample -i $ofile -o $ofile -mm "$resolution"x"$resolution"x"$resolution" -x nn
+        fi
     fi
 done
