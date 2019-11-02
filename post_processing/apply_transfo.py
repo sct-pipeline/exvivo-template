@@ -69,8 +69,11 @@ def convert_nii_mnc(nii, mnc):
     sct.run('nii2mnc '+nii+' '+mnc)
 
 
-def apply_transfo_minc(i, w, o):
-    sct.run('mincresample -transformation '+w+' -tfm_input_sampling '+i+' '+o)
+def apply_transfo_minc(i, w, o, x):
+    cmd = 'mincresample -transformation '+w+' -tfm_input_sampling '+i+' '+o
+    if x == 'nn':
+        cmd += ' -nearest_neighbour '
+    sct.run(cmd)
 
 
 def convert_mnc_nii(mnc, nii):
@@ -114,7 +117,7 @@ def run_main(args):
         os.makedirs(tmpfolder)
 
     # loop across subjects
-    for subj in os.listdir(ifolder):
+    for subj in os.listdir(ifolder)[:1]:
         # straighten image
         fname_im_straight = os.path.join(ifolder, subj, 't1', 't1_straight.nii.gz')
         # warping field from raw to preprocess space
@@ -123,7 +126,7 @@ def run_main(args):
         fname_warp_template = os.path.join(wfolder, subj+'_t1.mnc_corr.'+last_it.zfill(3)+'_f.xfm')
 
         # loop across derivative files
-        for deriv in ['seg']:  ####, 'gmseg', 'labels']:
+        for deriv in ['labels_disk']:  ####, 'gmseg', 'seg']:
             # apply transfo from raw to preprocess space
             fname_in = os.path.join(ifolder, subj, 't1', 't1_'+deriv+'.nii.gz')
             fname_prepro = os.path.join(tmpfolder, subj+'_'+deriv+'_prepro.nii.gz')
@@ -141,7 +144,8 @@ def run_main(args):
             fname_reg_mnc = os.path.join(tmpfolder, subj+'_'+deriv+'_reg.mnc')
             apply_transfo_minc(i=fname_prepro_mnc,
                                 w=fname_warp_template,
-                                o=fname_reg_mnc)
+                                o=fname_reg_mnc,
+                                x='nn' if deriv == 'labels_disk' else False)
 
             # convert from mnc to nii
             fname_reg = os.path.join(tmpfolder, subj+'_'+deriv+'_reg.nii.gz')
@@ -155,6 +159,13 @@ def run_main(args):
                         i=fname_reg,
                         i_tmp=fname_reg_dIAR,
                         o=fname_reg_out)
+
+            # for labels: check that no one vanished
+            if deriv == 'labels_disk':
+                i_in, i_out = Image(fname_in), Image(fname_reg_out)
+                print(' ')
+                print(np.unique(i_in.data), np.unique(i_out.data))
+
 
 if __name__ == '__main__':
     parser = get_parser()
