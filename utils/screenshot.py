@@ -85,7 +85,7 @@ def run_main(args):
 
     im_lst, fname_out_lst = [], []
     im = Image(im_fname)
-    print(im.dim)
+
     for z in z_lst:
         im_lst.append(im.data[:, :, z])
         fname_out_lst.append(os.path.join(ofolder, str(z).zfill(3)+'.png'))
