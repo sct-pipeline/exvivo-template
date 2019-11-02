@@ -37,12 +37,14 @@ import numpy as np
 import argparse
 
 import sys
+sys.path.append(os.popen('echo $SCT_DIR').readlines()[0][:-1])
 sys.path.append(os.popen('echo $SCT_DIR').readlines()[0][:-1]+"/scripts")
 
 import sct_utils as sct
 import sct_apply_transfo
 import sct_convert
 import sct_image
+from spinalcordtoolbox.image import Image
 
 
 def get_parser():
@@ -117,7 +119,7 @@ def run_main(args):
         os.makedirs(tmpfolder)
 
     # loop across subjects
-    for subj in os.listdir(ifolder)[:1]:
+    for subj in os.listdir(ifolder):
         # straighten image
         fname_im_straight = os.path.join(ifolder, subj, 't1', 't1_straight.nii.gz')
         # warping field from raw to preprocess space
