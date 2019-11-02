@@ -51,10 +51,12 @@ def run_main(args):
 
         # get crop zlim
         im_top = Image(fname_top_labels)
+        print(im_top.orientation, im_top.dim)
         z_top_dct = get_label_z(im_top.data)
         lb_lst = list(z_top_dct.keys())
-        z_min, z_max = str(z_top_dct[min(lb_lst)]+1), str(z_top_dct[max(lb_lst)])
+        z_max, z_min = str(z_top_dct[min(lb_lst)]), str(z_top_dct[max(lb_lst)]+1)
         del im_top
+        print(z_min, z_max)
 
         # crop all images starting with "template_*"
         for f in os.listdir(ifolder):
