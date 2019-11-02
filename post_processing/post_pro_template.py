@@ -38,8 +38,7 @@ def get_parser():
 
 
 def smooth_spinalcord(i, s):
-    sct_smooth_spinalcord.main(args=[
-                                    '-i', i,
+    sct_smooth_spinalcord.main(args=['-i', i,
                                     '-s', s])
 
 
@@ -127,7 +126,7 @@ def run_main(args):
     smooth_spinalcord(i=fname_norm,
                         s=sfname)
 
-    fname_smooth = 'template_smooth.nii.gz'
+    fname_smooth = 'tmp_norm_smooth.nii.gz'
     fname_out = os.path.join(ofolder, 'template_pp.nii.gz')
     shutil.copyfile(fname_smooth, fname_out)
 
