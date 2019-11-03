@@ -66,7 +66,7 @@ def save_samples(i_dct, ofolder, p_dct=None, cmap=None):
             plt.imshow(img_out, interpolation='nearest', aspect='auto')
 
         else:
-            fname_out = os.path.join(ofolder, str(i).zfill(2)+'_prob.png')
+            fname_out = os.path.join(ofolder, str(i).zfill(2)+'.png')
 
             plt.imshow(im, interpolation='nearest', aspect='auto', cmap='gray')
 
@@ -81,6 +81,19 @@ def get_label_zlim(data):
             dct[v] = np.where(data == v)[2][0]
 
     return dct
+
+
+def get_mid(data, data_sc, z_dct):
+    sample_dct = {}
+    for i in range(1, 15):
+        if i in z_dct and 1+i in z_dct:
+            z_mid = int(round((z_dct[i]+1-z_dct[i+1])*1.0/2)) + z_dct[i+1]
+            data_zmid = data[:,:,z_mid]
+            data_sc_zmid = data_sc[:,:,z_mid]
+            data_zmid[np.where(data_sc_zmid == 0)] = 0
+            sample_dct[i] = np.rot90(data_zmid)
+
+    return sample_dct
 
 
 def get_average(data, data_sc, z_dct):
@@ -123,17 +136,20 @@ def run_main(args):
     zlim_dct = get_label_zlim(lb)
 
     # average data per level
-    sample_dct = get_average(data=im,
+    #sample_dct = get_average(data=im,
+    #                            data_sc=mask,
+    #                            z_dct=zlim_dct)
+    sample_dct = get_mid(data=im,
                                 data_sc=mask,
                                 z_dct=zlim_dct)
-
     # save samples
     save_samples(i_dct=sample_dct,
                     ofolder=ofolder)
 
     # if prob, then overlay image and prob
     if prob:
-        prob_dct = get_average(prob, mask, zlim_dct)
+        #prob_dct = get_average(prob, mask, zlim_dct)
+        prob_dct = get_mid(prob, mask, zlim_dct)
         save_samples(i_dct=sample_dct,
                         ofolder=ofolder,
                         p_dct=prob_dct,
