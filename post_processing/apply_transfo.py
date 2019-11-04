@@ -44,6 +44,8 @@ import sct_utils as sct
 import sct_apply_transfo
 import sct_convert
 import sct_image
+import sct_maths
+import sct_label_utils
 from spinalcordtoolbox.image import Image
 
 
@@ -91,12 +93,28 @@ def set_orient(ref, i, i_tmp, o):
                             '-v', '0'])
     sct_image.main(args=[
                             '-i', i,
-                            '-setorient-data', 'IAR',
+                            '-setorient-data', 'IPR',
                             '-o', i_tmp,
                             '-v', '0'])
     sct_image.main(args=[
                             '-i', i_tmp,
                             '-setorient', 'RPI',
+                            '-o', o,
+                            '-v', '0'])
+
+
+def dilate_labels(i, o):
+    sct_maths.main(args=[
+                            '-i', i,
+                            '-dilate', '4',
+                            '-o', o,
+                            '-v', '0'])
+
+
+def cubic2point(i, o):
+    sct_label_utils.main(args=[
+                            '-i', i,
+                            '-cubic-to-point',
                             '-o', o,
                             '-v', '0'])
 
@@ -119,7 +137,7 @@ def run_main(args):
         os.makedirs(tmpfolder)
 
     # loop across subjects
-    for subj in os.listdir(ifolder):
+    for subj in ['3960', '3392', '3889', '4322']:  #os.listdir(ifolder):
         # straighten image
         fname_im_straight = os.path.join(ifolder, subj, 't1', 't1_straight.nii.gz')
         # warping field from raw to preprocess space
@@ -128,10 +146,18 @@ def run_main(args):
         fname_warp_template = os.path.join(wfolder, subj+'_t1.mnc_corr.'+last_it.zfill(3)+'_f.xfm')
 
         # loop across derivative files
-        for deriv in ['labels_disk']:  ####, 'gmseg', 'seg']:
+        for deriv in ['gmseg']:  ####, 'labels_disk', 'seg']:
             # apply transfo from raw to preprocess space
             fname_in = os.path.join(ifolder, subj, 't1', 't1_'+deriv+'.nii.gz')
             fname_prepro = os.path.join(tmpfolder, subj+'_'+deriv+'_prepro.nii.gz')
+
+            # if labels: dilate
+            if deriv == 'labels_disk':
+                fname_dilat = os.path.join(tmpfolder, subj+'_'+deriv+'_dilat.nii.gz')
+                dilate_labels(i=fname_in,
+                                o=fname_dilat)
+                fname_in = fname_dilat
+
             apply_transfo_sct(i=fname_in,
                                 d=fname_im_straight,
                                 w=fname_warp_prepro,
@@ -167,7 +193,8 @@ def run_main(args):
                 i_in, i_out = Image(fname_in), Image(fname_reg_out)
                 print(' ')
                 print(np.unique(i_in.data), np.unique(i_out.data))
-
+                cubic2point(i=fname_reg_out,
+                            o=fname_reg_out)
 
 if __name__ == '__main__':
     parser = get_parser()
