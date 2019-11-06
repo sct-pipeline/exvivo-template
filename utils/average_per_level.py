@@ -110,7 +110,8 @@ def get_average(data, data_sc, z_dct):
                 data_cur, mask_cur = np.stack(data_lst, axis=2), np.stack(mask_lst, axis=2)
                 data_cur[np.where(mask_cur == 0)] = 0
                 sample = np.mean(data_cur, axis=2)
-
+                sample[sample<0.2]=0
+                print(np.unique(sample))
                 sample_dct[i] = np.rot90(sample)
 
     return sample_dct
@@ -147,9 +148,9 @@ def run_main(args):
                     ofolder=ofolder)
 
     # if prob, then overlay image and prob
-    if prob:
-        #prob_dct = get_average(prob, mask, zlim_dct)
-        prob_dct = get_mid(prob, mask, zlim_dct)
+    if prob is not None:
+        prob_dct = get_average(prob, mask, zlim_dct)
+        #prob_dct = get_mid(prob, mask, zlim_dct)
         save_samples(i_dct=sample_dct,
                         ofolder=ofolder,
                         p_dct=prob_dct,
