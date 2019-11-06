@@ -14,7 +14,6 @@
 import os
 import numpy as np
 import argparse
-import matplotlib.pyplot as plt
 
 import sys
 sys.path.append(os.popen('echo $SCT_DIR').readlines()[0][:-1])
@@ -40,7 +39,7 @@ def run_main(args):
 
     # flip data
     for f in os.listdir(ifolder):
-        if f.endswith('gmseg.nii.gz')
+        if f.endswith('gmseg.nii.gz'):
             fname_in = os.path.join(ifolder, f)
             fname_out = os.path.join(ifolder, f.split('.nii.gz')[0]+'_flip.nii.gz')
             im_in = Image(fname_in)
@@ -51,7 +50,7 @@ def run_main(args):
 
     # average data
     fname_out = os.path.join(ofolder, 'template_gm.nii.gz')
-    im_lst = [Image(f) for f in os.listdir(ifolder) if 'gmseg' in f]
+    im_lst = [Image(os.path.join(ifolder,f)) for f in os.listdir(ifolder) if 'gmseg' in f]
     im_out = zeros_like(im_lst[0])
     im_data_lst = np.array([i.data for i in im_lst])
     im_out.data = np.mean(im_data_lst, axis=0)
