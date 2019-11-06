@@ -14,7 +14,7 @@ import os
 import numpy as np
 import argparse
 import pandas as pd
-import maths
+import math
 from scipy.ndimage.measurements import center_of_mass
 
 import sys
@@ -36,13 +36,13 @@ def compare_ctrl(i, i_ref, px):
     dist_lst = []
 
     for z in list(np.unique(np.where(i_ref)[2])):
-        if np.sum(i[:,:,z]):
+        if np.sum(i[:,:,z]) >= 0.8 * np.sum(i_ref[:,:,z]):
             x_ref, y_ref = center_of_mass(i_ref[:,:,z])
             x, y = center_of_mass(i[:,:,z])
             dist = math.sqrt( ((x-x_ref)**2)+((y-y_ref)**2) ) * px
             dist_lst.append(dist)
 
-    return mean(dist_lst), max(dist_lst)
+    return np.mean(dist_lst), np.max(dist_lst)
 
 
 def compare_gm(i, i_ref):
@@ -60,7 +60,7 @@ def compare_gm(i, i_ref):
             intersection = np.logical_and(im1, im2)
             dice_lst.append((2. * intersection.sum())/ im_sum)
 
-    return mean(dice_lst)
+    return np.mean(dice_lst)
 
 
 def compute_metrics(vals):
@@ -87,7 +87,7 @@ def run_main(args):
     fname_template_sc = os.path.join(tfolder, 'template_sc.nii.gz')
     fname_template_gm = os.path.join(tfolder, 'template_gm.nii.gz')
     i_t_sc, i_t_gm = Image(fname_template_sc), Image(fname_template_gm)
-    d_t_sc, d_t_gm = i_t_sc.data.astype(np.int), (i_t_gm.data > 0.5).astype(np.int)
+    d_t_sc, d_t_gm = i_t_sc.data.astype(np.int), (i_t_gm.data > 0.2).astype(np.int)
     px = i_t_sc.dim[4]
     del i_t_sc, i_t_gm
 
@@ -107,6 +107,7 @@ def run_main(args):
         if os.path.isfile(fname_gm):
             i_gm = Image(fname_gm)
             # compute Dice scores between gm masks
+            print(np.sum((i_gm.data > 0.5).astype(np.int)))
             dice_gm = compare_gm((i_gm.data > 0.5).astype(np.int), d_t_gm)
             del i_gm
         else:
@@ -116,8 +117,6 @@ def run_main(args):
         df.loc[idx, 'ctr_mean_dist'] = mean_dist
         df.loc[idx, 'ctr_max_dist'] = max_dist
         df.loc[idx, 'gm_mean_dice'] = dice_gm
-
-    compute_metrics()
 
     print(df)
 
