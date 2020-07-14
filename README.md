@@ -1,7 +1,7 @@
 # exvivo-template
 Repository for generating high resolution ex-vivo MRI template.
 
-![pipeline](https://github.com/sct-pipeline/exvivo_template/raw/master/images/exvivo_pipeline.png)
+![pipeline](https://github.com/sct-pipeline/exvivo-template/raw/master/images/exvivo_pipeline.png)
 
 ## Installation
 
