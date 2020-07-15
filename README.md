@@ -22,9 +22,10 @@ TO ADD: minc install
 - 08 - Cuneate fasciculus
 - 09 - Gracile fasciculus
 - 10 - Phrenic motor neurons of lamina 9
+- 11 - Biceps motor neurons of lamina 9
+- 12 - Supraspinatus and infraspinatus motor neurons of lamina 9
+- 13 - Deltoid motor neurons of lamina 9
 
-Bi9          biceps motor neurons of lamina 9
-De9        deltoid motor neurons of lamina 9
 FEx         forearm extensor motor neurons of lamina 9
 
 FFl          forearm flexor motor neurons of lamina 9
@@ -37,7 +38,6 @@ LD9        latissimus dorsi motor neurons of lamina 9
 Pec9      pectoral muscle motor neurons of lamina 9
 
 
-SI9          supraspinatus and infraspinatus motor neurons of lamina 9
 
 
 Tr9         triceps motor neurons of lamina 9
