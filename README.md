@@ -21,6 +21,7 @@ TO ADD: minc install
 - 07 - Lamina 2 of the spinal gray (substantia gelatinosa)
 - 08 - Cuneate fasciculus
 - 09 - Gracile fasciculus
+- 10 - Phrenic motor neurons of lamina 9
 
 Bi9          biceps motor neurons of lamina 9
 De9        deltoid motor neurons of lamina 9
@@ -35,7 +36,6 @@ LD9        latissimus dorsi motor neurons of lamina 9
 
 Pec9      pectoral muscle motor neurons of lamina 9
 
-Ph9        phrenic motor neurons of lamina 9
 
 SI9          supraspinatus and infraspinatus motor neurons of lamina 9
 
