@@ -38,8 +38,7 @@ def get_parser():
 
 
 def smooth_spinalcord(i, s):
-    sct_smooth_spinalcord.main(args=['-i', i,
-                                    '-s', s])
+    os.system("sct_smooth_spinalcord -i "+ i + " -s " + s)
 
 
 def norm_image(fname_image, fname_mask, fname_out):
