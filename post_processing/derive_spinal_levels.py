@@ -61,6 +61,11 @@ def run_main(args):
                 z_mid_lb = z_min_lb+int(round((z_max_lb-z_min_lb)*1.0 / 2))
                 im_mid.data[:,:,z_mid_lb] = lb * im_ctrl.data[:,:,z_mid_lb]
 
+        # top section
+        min_lb = min(lb_lst)
+        zmin_top_lb = z_top_dct[min_lb]
+        im_continuous.data[:, :, zmin_top_lb+1:] = (min_lb - 1) * im_ctrl.data[:, :, zmin_top_lb+1:]
+
         # save outputs
         im_continuous.save(fname_continuous)
         im_mid.save(fname_mid)
