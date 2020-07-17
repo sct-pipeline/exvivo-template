@@ -26,10 +26,8 @@ TO ADD: minc install
 - 12 - Supraspinatus and infraspinatus motor neurons of lamina 9
 - 13 - Deltoid motor neurons of lamina 9
 - 14 - Triceps motor neurons of lamina 9
-
-FEx         forearm extensor motor neurons of lamina 9
-
-FFl          forearm flexor motor neurons of lamina 9
+- 15 - Forearm extensor motor neurons of lamina 9
+- 16 - Forearm flexor motor neurons of lamina 9
 
 
 
