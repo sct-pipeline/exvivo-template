@@ -25,6 +25,7 @@ TO ADD: minc install
 - 11 - Biceps motor neurons of lamina 9
 - 12 - Supraspinatus and infraspinatus motor neurons of lamina 9
 - 13 - Deltoid motor neurons of lamina 9
+- 14 - Triceps motor neurons of lamina 9
 
 FEx         forearm extensor motor neurons of lamina 9
 
@@ -40,4 +41,3 @@ Pec9      pectoral muscle motor neurons of lamina 9
 
 
 
-Tr9         triceps motor neurons of lamina 9
