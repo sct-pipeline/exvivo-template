@@ -28,11 +28,7 @@ TO ADD: minc install
 - 14 - Triceps motor neurons of lamina 9
 - 15 - Forearm extensor motor neurons of lamina 9
 - 16 - Forearm flexor motor neurons of lamina 9
-
-
-
-
-LD9        latissimus dorsi motor neurons of lamina 9
+- 17 - Latissimus dorsi motor neurons of lamina 9
 
 Pec9      pectoral muscle motor neurons of lamina 9
 
