@@ -31,6 +31,6 @@ TO ADD: minc install
 - 17 - Latissimus dorsi motor neurons of lamina 9
 - 18 - Pectoral muscle motor neurons of lamina 9
 
-
-
+## Contributors
+Charley Gros, Nyoman Kurniawan, Benjamin De Leener, Charles Watson and Julien Cohen-Adad.
 
