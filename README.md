@@ -32,5 +32,5 @@ TO ADD: minc install
 - 18 - Pectoral muscle motor neurons of lamina 9
 
 ## Contributors
-Charley Gros, (Nyoman Kurniawan)[https://cai.centre.uq.edu.au/profile/110/nyoman-kurniawan], Benjamin De Leener, Charles Watson and Julien Cohen-Adad.
+Charley Gros, [Nyoman Kurniawan](https://cai.centre.uq.edu.au/profile/110/nyoman-kurniawan), Benjamin De Leener, Charles Watson and Julien Cohen-Adad.
 
