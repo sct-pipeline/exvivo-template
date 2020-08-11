@@ -11,6 +11,17 @@ TO ADD: minc install
 
 ## Getting started
 
+### Data labelling
+
+#### Spinal level labelling
+
+Manual labelling of the rostral and caudal extent of each nerve root was performed using `fsleyes`. Each spinal level was then identified by orthogonal projection of these labels onto the spinal cord centerline, using `sct_label_utils -create-seg`.
+
+#### Grey matter and spinal cord segmentation
+
+Spinal cord and grey matter tissues were automatically segmented using a deep learning model trained and applied using [IVADOMED](https://github.com/ivadomed/ivadomed). For each subject, the network was trained on 20 randomly picked and manually segmented slices, then inferred on the ~1,000 remaining slices. Results were reviewed and manually corrected when needed (~5%). The trained model is available [here](https://github.com/ivadomed/sc-gm_t2star_exvivo).
+
+
 ## Labels
 - 01 - Anterior corticospinal tract
 - 02 - Central canal
