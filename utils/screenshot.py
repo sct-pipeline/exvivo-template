@@ -42,6 +42,11 @@ def get_parser():
 
 def screenshot_w_seg(im_lst, seg_lst, cmap, fname_out_lst):
     for im, seg, fname_out in zip(im_lst, seg_lst, fname_out_lst):
+
+        ####
+        seg[seg < 0.3] = 0
+        ####
+        print(np.unique(seg))
         plt.figure()
         plt.subplot(1, 1, 1)
         plt.axis("off")

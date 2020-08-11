@@ -57,7 +57,7 @@ def run_main(args):
     tfile = args.t
 
     i_exvivo, i_pam50 = Image(ifile), Image(tfile)
-    d_exvivo, d_pam50 = (i_exvivo.data > 0.5).data.astype(np.int), (i_pam50.data > 0.5).astype(np.int)
+    d_exvivo, d_pam50 = (i_exvivo.data > 0.5).astype(np.int), (i_pam50.data > 0.5).astype(np.int)
 
     # compute Dice scores between masks
     dice_res = compare_sc(d_exvivo, d_pam50)

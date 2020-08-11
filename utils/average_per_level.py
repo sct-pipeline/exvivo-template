@@ -27,7 +27,7 @@ import matplotlib.pyplot as plt
 import sys
 sys.path.append(os.popen('echo $SCT_DIR').readlines()[0][:-1])
 
-from spinalcordtoolbox.image import Image
+from spinalcordtoolbox.image import Image, zeros_like
 
 
 def get_parser():
@@ -96,7 +96,7 @@ def get_mid(data, data_sc, z_dct):
     return sample_dct
 
 
-def get_average(data, data_sc, z_dct):
+def get_average(data, data_sc, z_dct, th=None):
     sample_dct = {}
     for i in range(1, 15):
         if i in z_dct and 1+i in z_dct:
@@ -110,9 +110,10 @@ def get_average(data, data_sc, z_dct):
                 data_cur, mask_cur = np.stack(data_lst, axis=2), np.stack(mask_lst, axis=2)
                 data_cur[np.where(mask_cur == 0)] = 0
                 sample = np.mean(data_cur, axis=2)
-                sample[sample<0.2]=0
+                if th:
+                    sample[sample<th]=0
                 print(np.unique(sample))
-                sample_dct[i] = np.rot90(sample)
+                sample_dct[i] = sample #np.rot90(sample)
 
     return sample_dct
 
@@ -132,25 +133,45 @@ def run_main(args):
     # load images
     im, mask, lb = Image(fname_im).data, Image(fname_sc).data, Image(fname_lb).data
     prob = Image(fname_prob).data if fname_prob else None
-    
+#    lb[:,:,0] = 9
+
     # get zlim of labels
     zlim_dct = get_label_zlim(lb)
-
+    print(zlim_dct)
     # average data per level
-    #sample_dct = get_average(data=im,
-    #                            data_sc=mask,
-    #                            z_dct=zlim_dct)
-    sample_dct = get_mid(data=im,
+    sample_dct = get_average(data=im,
                                 data_sc=mask,
                                 z_dct=zlim_dct)
+    #sample_dct = get_mid(data=im,
+    #                            data_sc=mask,
+    #                            z_dct=zlim_dct)
     # save samples
     save_samples(i_dct=sample_dct,
                     ofolder=ofolder)
 
     # if prob, then overlay image and prob
     if prob is not None:
-        prob_dct = get_average(prob, mask, zlim_dct)
-        #prob_dct = get_mid(prob, mask, zlim_dct)
+#        prob_dct = get_average(prob, mask, zlim_dct, 0.15)
+#        out = zeros_like(Image(fname_prob))
+#        print(out.dim)
+#        for l in prob_dct:
+#            print(l, prob_dct[l].shape, np.sum(prob_dct[l]))
+#            out.data[:,:,l] = prob_dct[l]
+#        out.save('tmp.nii.gz')
+#        del out
+#        out = zeros_like(Image(fname_prob))
+#        print(out.dim)
+#        for l in prob_dct:
+#            print(l, prob_dct[l].shape, np.sum(prob_dct[l]))
+#            out.data[:,:,l] = sample_dct[l]
+#        out.save('tmp_i.nii.gz')
+#        del out
+#        prob_dct = get_mid(prob, mask, zlim_dct)
+        prob_dct = {}
+        iii=Image('tmp_c_c.nii.gz')
+        for ix in range(2,9):
+            prob_dct[ix] = iii.data[:,:,ix]
+        del iii
         save_samples(i_dct=sample_dct,
                         ofolder=ofolder,
                         p_dct=prob_dct,
