@@ -1,0 +1,8 @@
+numpy
+futures
+ivadomed==1.2.1
+matplotlib
+nibabel
+pandas
+scipy
+tqdm
