@@ -86,8 +86,13 @@ def get_label_zlim(data):
 def get_mid(data, data_sc, z_dct):
     sample_dct = {}
     for i in range(1, 15):
-        if i in z_dct and 1+i in z_dct:
-            z_mid = int(round((z_dct[i]+1-z_dct[i+1])*1.0/2)) + z_dct[i+1]
+        if 1 + i in z_dct:
+            z_min = z_dct[i+1]
+            if i in z_dct:
+                z_max = z_dct[i]+1
+            else:
+                z_max = np.max(np.where(data_sc)[2])
+            z_mid = int(round((z_max-z_min)*1.0/2)) + z_dct[i+1]
             data_zmid = data[:,:,z_mid]
             data_sc_zmid = data_sc[:,:,z_mid]
             data_zmid[np.where(data_sc_zmid == 0)] = 0
@@ -99,9 +104,15 @@ def get_mid(data, data_sc, z_dct):
 def get_average(data, data_sc, z_dct):
     sample_dct = {}
     for i in range(1, 15):
-        if i in z_dct and 1+i in z_dct:
+        #if i in z_dct and 1+i in z_dct:
+        if 1 + i in z_dct:
             data_lst, mask_lst = [], []
-            for zz in range(z_dct[i+1], z_dct[i]+1):
+            z_min = z_dct[i+1]
+            if i in z_dct:
+                z_max = z_dct[i]+1
+            else:
+                z_max = np.max(np.where(data_sc)[2])
+            for zz in range(z_min, z_max):
                 if np.sum(data_sc[:, :, zz]):
                     data_lst.append(data[:, :, zz])
                     mask_lst.append(data_sc[:, :, zz])
@@ -149,8 +160,8 @@ def run_main(args):
 
     # if prob, then overlay image and prob
     if prob is not None:
-        prob_dct = get_average(prob, mask, zlim_dct)
-        #prob_dct = get_mid(prob, mask, zlim_dct)
+        #prob_dct = get_average(prob, mask, zlim_dct)
+        prob_dct = get_mid(prob, mask, zlim_dct)
         save_samples(i_dct=sample_dct,
                         ofolder=ofolder,
                         p_dct=prob_dct,
