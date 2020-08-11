@@ -1,0 +1,22 @@
+{
+    "path_data": "../../data_nvme_chgroc/data_midLvl/",
+    "path_template": "../../data_nvme_chgroc/template_midLvl/",
+    "suffix_centerline": "_seg",
+    "subjects": [
+        "3890",
+        "3889",
+        "3392",
+	"3904",
+	"3907",
+        "3932",
+	"3944",
+	"3920",
+	"3960",
+	"4026",
+	"4219",
+	"4225",
+	"4322"
+    ],
+    "suffix_segmentation": "_seg",
+    "suffix_disks": "_labels_midLvl"
+}
