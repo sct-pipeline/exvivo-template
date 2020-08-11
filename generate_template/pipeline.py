@@ -14,7 +14,6 @@ list_centerline = generate_centerline(dataset_info=dataset_info, contrast='t1', 
 # computing average template centerline and vertebral distribution
 points_average_centerline, position_template_disks = average_centerline(list_centerline=list_centerline,
                                                                          dataset_info=dataset_info,
-                                                                         use_ICBM152=False,
                                                                          use_label_ref='C7')
 
 # generating the initial template space
