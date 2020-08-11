@@ -5,9 +5,15 @@ Repository for generating high resolution ex-vivo MRI template.
 
 ## Installation
 
-### Dependencies
+To install, run:
 
-TO ADD: minc install
+```
+git clone https://github.com/sct-pipeline/exvivo-template.git
+cd ivadomed
+pip install -e .
+```
+
+To use the tools to generate the template, you will need to install additional dependecies, as described [here](https://github.com/neuropoly/template#dependencies).
 
 ## Getting started
 
