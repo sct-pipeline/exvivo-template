@@ -29,6 +29,13 @@ source sct_launcher
 python generate_template/pipeline.py
 ```
 
+### Tempalte generation
+
+To generate the template with N (here N=13) subjects:
+```
+python -m scoop -n 13 -vvv generate_template/generate_template.py
+```
+
 ## Labels
 - 01 - Anterior corticospinal tract
 - 02 - Central canal
