@@ -126,14 +126,12 @@ def generate_centerline(dataset_info, contrast='t1', regenerate=False):
             # extracting intervertebral disks
             im = Image(fname_image_disks)
             coord = im.getNonZeroCoordinates(sorting='z', reverse_coord=True)
-            print(coord)
             coord_physical = []
             for c in coord:
                 if c.value <= 22 or c.value in [48, 49, 50, 51, 52]:  # 22 corresponds to L2
                     c_p = list(im.transfo_pix2phys([[c.x, c.y, c.z]])[0])
                     c_p.append(c.value)
                     coord_physical.append(c_p)
-            print(coord_physical)
             # extracting centerline from binary image and create centerline object with vertebral distribution
             x_centerline_fit, y_centerline_fit, z_centerline, x_centerline_deriv, y_centerline_deriv, z_centerline_deriv = smooth_centerline(
                 fname_image_centerline, algo_fitting='nurbs',
@@ -164,9 +162,8 @@ def average_centerline(list_centerline, dataset_info, use_label_ref=None):
 
     # extracting distance of each disk from C1 HERE C4
     list_dist_disks = []
-    print('For each Centerline, compute distance of each disk from C5')
+    print('For each Centerline, compute distance of each disk from '+LABEL_REFERENCE)
     for centerline in list_centerline:
-        print(centerline.distance_from_C1label)
         list_dist_disks.append(centerline.distance_from_C1label)
 
     # computing length of each vertebral level
@@ -179,7 +176,6 @@ def average_centerline(list_centerline, dataset_info, use_label_ref=None):
                 length = abs(dist_disks[disk_label] - dist_disks[next_label])
             else:
                 if disk_label in average_spinal_length:
-                    print(disk_label)
                     length = average_spinal_length[disk_label]
                 else:
                     length = 0.0
@@ -188,8 +184,6 @@ def average_centerline(list_centerline, dataset_info, use_label_ref=None):
                 length_vertebral_levels[disk_label].append(length)
             else:
                 length_vertebral_levels[disk_label] = [length]
-    print('length of each vertebral level')
-    print(length_vertebral_levels)
 
     # averaging the length of vertebral levels
     average_length = {}
@@ -197,8 +191,6 @@ def average_centerline(list_centerline, dataset_info, use_label_ref=None):
         mean = np.mean(length_vertebral_levels[disk_label])
         std = np.std(length_vertebral_levels[disk_label])
         average_length[disk_label] = [disk_label, mean, std]
-    print('average length')
-    print(average_length)
 
     # computing distances of disks from C1, based on average length  HERE C4
     distances_disks_from_C1 = {LABEL_REFERENCE: 0.0}
@@ -208,8 +200,6 @@ def average_centerline(list_centerline, dataset_info, use_label_ref=None):
     for disk_number in range(labels_regions[LABEL_REFERENCE]-1, 0, -1):
         if str(disk_number) in regions_labels and regions_labels[str(disk_number)] in average_length:
             distances_disks_from_C1[regions_labels[str(disk_number)]] = distances_disks_from_C1[regions_labels[str(disk_number + 1)]] - average_length[regions_labels[str(disk_number)]][1]
-    print('computing distances of disks from C5, based on average length')
-    print(distances_disks_from_C1)
 
     # calculating disks average distances from C1 HERE C4
     average_distances = []
@@ -217,12 +207,9 @@ def average_centerline(list_centerline, dataset_info, use_label_ref=None):
         mean = np.mean(distances_disks_from_C1[disk_label])
         std = np.std(distances_disks_from_C1[disk_label])
         average_distances.append([disk_label, mean, std])
-    print('calculating disks average distances from C5')
-    print(average_distances)
 
     # averaging distances for all subjects and calculating relative positions
     average_distances = sorted(average_distances, key=lambda x: x[1], reverse=False)
-    print(average_distances)
     number_of_points_between_levels = 500
     disk_average_coordinates = {}
     points_average_centerline = []
@@ -237,7 +224,6 @@ def average_centerline(list_centerline, dataset_info, use_label_ref=None):
         for j in range(number_of_points_between_levels):
             relative_position = float(j) / float(number_of_points_between_levels)
             if disk_label in list(range(1, labels_regions[LABEL_REFERENCE])):
-                print(disk_label)
                 relative_position = 1.0 - relative_position
             list_coordinates = [[]] * len(list_centerline)
             for k, centerline in enumerate(list_centerline):
@@ -251,10 +237,6 @@ def average_centerline(list_centerline, dataset_info, use_label_ref=None):
             if j == 0:
                 disk_average_coordinates[disk_label] = average_coord
                 disk_position_in_centerline[disk_label] = i * number_of_points_between_levels
-
-    print(disk_average_coordinates)
-    print(average_positions_from_C1)
-    print(disk_position_in_centerline)
 
     # create final template space
 
@@ -271,13 +253,10 @@ def average_centerline(list_centerline, dataset_info, use_label_ref=None):
     position_template_disks = {}
 
     coord_ref = np.array([0.0, 0.0, 0.0])
-    print(average_positions_from_C1[label_ref])
     for disk in average_length:
         coord_disk = coord_ref.copy()
         coord_disk[2] -= average_positions_from_C1[disk] - average_positions_from_C1[label_ref]
         position_template_disks[disk] = coord_disk
-    print('position template_disks')
-    print(position_template_disks)
 
     index_straight = 0
 
@@ -408,6 +387,7 @@ def straighten_seg(dataset_info, contrast='t1'):
         tqdm_bar.update(1)
     tqdm_bar.close()
 
+    
 def straighten_all_subjects(dataset_info, normalized=False, contrast='t1'):
     """
     This function straighten all images based on template centerline
@@ -469,17 +449,12 @@ def clean_straight(dataset_info, contrast='t1', ratio=0.9):
         data = im.data[100:150, 100:150]
         max_max_val = np.percentile(data[data > 100], 80)
         thr = ratio * max_max_val
-        # print('MaxMaxVal: ' + str(round(max_max_val, 2)))
-        # print('Thr: ' + str(round(thr, 2)))
 
         z2clean = []
         for i in range(data.shape[2]):
             max_val = np.percentile(data[:, :, i], 90)
             if max_val < thr:
-                print(str(i) + ' --> ' + str(round(max_val, 2)) + ' ERROR')
                 z2clean.append(i)
-            else:
-                print(str(i) + ' --> ' + str(round(max_val, 2)))
 
         im_out.data[:, :, z2clean] *= 0.0
         im_out.save(os.path.join(path_data_subject, fname_out))
@@ -581,22 +556,6 @@ def normalize_intensity_template(dataset_info, fname_template_centerline=None, c
                 z_values.append(coord_z[2])
                 intensities.append(np.mean(image.data[coord_z[0] - extend - 1:coord_z[0] + extend, coord_z[1] - extend - 1:coord_z[1] + extend, coord_z[2]]))
 
-        # for the slices that are not in the image, extend min and max values to cover the whole image
-        #min_z, max_z = min(z_values), max(z_values)
-        #z_values_temp = copy(z_values)
-        #intensities_temp = copy(intensities)
-        #for cz in range(nz):
-        #    if cz not in z_values:
-        #        z_values_temp.append(cz)
-        #        if cz < min_z:
-        #            intensities_temp.append(intensities[z_values.index(min_z)])
-        #        elif cz > max_z:
-        #            intensities_temp.append(intensities[z_values.index(max_z)])
-        #        else:
-        #            intensities_temp.append(intensities[cz-1])
-        #intensities = intensities_temp
-        #z_values = z_values_temp
-
         # Preparing data for smoothing
         arr_int = [[z_values[i], intensities[i]] for i in range(len(z_values))]
         arr_int.sort(key=lambda x: x[0])  # and make sure it is ordered with z
@@ -655,7 +614,6 @@ def normalize_intensity_template(dataset_info, fname_template_centerline=None, c
         image_image_new = image.copy()
         image_image_new.change_type(dtype='float32')
         for i in range(nz):
-            print(np.sum(image_image_new.data[:, :, i]), np.sum(image_image_new.data[:, :, i] * average_intensity / intensity_profiles[subject_name][i]))
             image_image_new.data[:, :, i] *= average_intensity / intensity_profiles[subject_name][i]
 
         # Save intensity normalized template
@@ -695,11 +653,8 @@ def convert_data2mnc(dataset_info, contrast='t1'):
         fname_nii = path_template + subject_name + '_' + contrast + '.nii.gz'
         fname_mnc = path_template + subject_name + '_' + contrast + '.mnc'
         fname_seg_mnc = path_template + subject_name + '_' + contrast + '_mask_er.mnc'
-        # if mask already present, deleting it
-        #if os.path.isfile(fname_mnc):
-        #    os.remove(fname_mnc)
 
-        #sct.run('nii2mnc ' + fname_nii + ' ' + fname_mnc)
+        sct.run('nii2mnc ' + fname_nii + ' ' + fname_mnc)
 
         writer.writerow([fname_mnc, fname_seg_mnc])
 
