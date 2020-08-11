@@ -122,13 +122,14 @@ def run_main(args):
                 fname_mask=sfname,
                 fname_out=fname_norm)
 
+    print('hey')
     smooth_spinalcord(i=fname_norm,
                         s=sfname)
-
+    print('ah')
     fname_smooth = 'tmp_norm_smooth.nii.gz'
     fname_out = os.path.join(ofolder, 'template_pp.nii.gz')
     shutil.copyfile(fname_smooth, fname_out)
-
+    print(fname_smooth, fname_out, os.getcwd())
 
 if __name__ == '__main__':
     parser = get_parser()

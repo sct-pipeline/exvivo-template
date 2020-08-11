@@ -15,6 +15,8 @@ import numpy as np
 import argparse
 import pandas as pd
 import math
+import seaborn as sns
+import matplotlib.pyplot as plt
 from scipy.ndimage.measurements import center_of_mass
 
 import sys
@@ -30,6 +32,19 @@ def get_parser():
     parser.add_argument("-o", help="Output folder.")
 
     return parser
+
+
+def plot_results(x, y, df, c, fname_out, ylimmin, ylimmax):
+    fig = plt.figure(figsize=[5, 20])
+    ax = fig.add_subplot(111)
+
+    sns.boxplot(x=x, y=y, data=df, color=c, width=0.5, fliersize=3, linewidth=3)
+
+    ax.set_ylim([ylimmin, ylimmax])
+    plt.yticks(fontsize=26)
+
+    fig.savefig(fname_out, bbox_inches='tight', pad_inches=0)
+    plt.close()
 
 
 def compare_ctrl(i, i_ref, px):
@@ -77,7 +92,7 @@ def run_main(args):
     # create ofolder if does not exist
     if not os.path.isdir(ofolder):
         os.makedirs(ofolder)
-
+    """
     subj_lst = list(set([f.split('_')[0] for f in os.listdir(ifolder) if os.path.isfile(os.path.join(ifolder, f))]))
 
     # init pandas
@@ -118,14 +133,24 @@ def run_main(args):
         df.loc[idx, 'ctr_max_dist'] = max_dist
         df.loc[idx, 'gm_mean_dice'] = dice_gm
 
-    print(df)
-
     print('\nCenterline Mean Distance:')
     compute_metrics(df['ctr_mean_dist'].values)
     print('\nCenterline Max Distance:')
     compute_metrics(df['ctr_max_dist'].values)
     print('\nGM Dice score:')
     compute_metrics(df['gm_mean_dice'].values)
+
+    df['i'] = 1
+    print(df)
+
+    df.to_csv(os.path.join(ofolder, 'res.csv'))
+    """
+
+    df = pd.read_csv(os.path.join(ofolder, 'res.csv'))
+    print(df)
+    plot_results('i', 'ctr_mean_dist', df, 'gold', os.path.join(ofolder, 'ctr_mean_dist.png'), 0.0, 0.4)
+    plot_results('i', 'ctr_max_dist', df, 'dodgerblue', os.path.join(ofolder, 'ctr_max_dist.png'), 0.0, 0.4)
+    plot_results('i', 'gm_mean_dice', df[df.gm_mean_dice != -1], 'forestgreen', os.path.join(ofolder, 'gm_dice.png'), 0.5, 1.0)
 
 if __name__ == '__main__':
     parser = get_parser()

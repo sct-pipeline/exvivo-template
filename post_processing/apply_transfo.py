@@ -35,6 +35,7 @@
 import os
 import numpy as np
 import argparse
+import shutil
 
 import sys
 sys.path.append(os.popen('echo $SCT_DIR').readlines()[0][:-1])
@@ -137,7 +138,7 @@ def run_main(args):
         os.makedirs(tmpfolder)
 
     # loop across subjects
-    for subj in ['3960', '3392', '3889', '4322']:  #os.listdir(ifolder):
+    for subj in os.listdir(ifolder): #['3960', '3392', '3889', '4322', '3890', '3904', '3907', '3920']:  #os.listdir(ifolder):
         # straighten image
         fname_im_straight = os.path.join(ifolder, subj, 't1', 't1_straight.nii.gz')
         # warping field from raw to preprocess space
@@ -173,7 +174,7 @@ def run_main(args):
             apply_transfo_minc(i=fname_prepro_mnc,
                                 w=fname_warp_template,
                                 o=fname_reg_mnc,
-                                x='nn' if deriv == 'labels_disk' else False)
+                                x='nn' if deriv == 'labels_disk' or deriv == 'gmseg' else False)
 
             # convert from mnc to nii
             fname_reg = os.path.join(tmpfolder, subj+'_'+deriv+'_reg.nii.gz')

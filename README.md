@@ -11,6 +11,31 @@ TO ADD: minc install
 
 ## Getting started
 
+### Data labelling
+
+#### Spinal level labelling
+
+Manual labelling of the rostral and caudal extent of each nerve root was performed using `fsleyes`. Each spinal level was then identified by orthogonal projection of these labels onto the spinal cord centerline, using `sct_label_utils -create-seg`.
+
+#### Grey matter and spinal cord segmentation
+
+Spinal cord and grey matter tissues were automatically segmented using a deep learning model trained and applied using [IVADOMED](https://github.com/ivadomed/ivadomed). For each subject, the network was trained on 20 randomly picked and manually segmented slices, then inferred on the ~1,000 remaining slices. Results were reviewed and manually corrected when needed (~5%). The trained model is available [here](https://github.com/ivadomed/sc-gm_t2star_exvivo).
+
+### Preprocessing
+
+Preprocessing pipeline has been adapted from this [project](https://github.com/neuropoly/template). The code is available under `generate_template/`. To run it:
+```
+source sct_launcher
+python generate_template/pipeline.py
+```
+
+### Tempalte generation
+
+To generate the template with N (here N=13) subjects:
+```
+python -m scoop -n 13 -vvv generate_template/generate_template.py
+```
+
 ## Labels
 - 01 - Anterior corticospinal tract
 - 02 - Central canal
@@ -25,19 +50,12 @@ TO ADD: minc install
 - 11 - Biceps motor neurons of lamina 9
 - 12 - Supraspinatus and infraspinatus motor neurons of lamina 9
 - 13 - Deltoid motor neurons of lamina 9
+- 14 - Triceps motor neurons of lamina 9
+- 15 - Forearm extensor motor neurons of lamina 9
+- 16 - Forearm flexor motor neurons of lamina 9
+- 17 - Latissimus dorsi motor neurons of lamina 9
+- 18 - Pectoral muscle motor neurons of lamina 9
 
-FEx         forearm extensor motor neurons of lamina 9
+## Contributors
+Charley Gros, [Nyoman Kurniawan](https://cai.centre.uq.edu.au/profile/110/nyoman-kurniawan), Benjamin De Leener, Charles Watson and Julien Cohen-Adad.
 
-FFl          forearm flexor motor neurons of lamina 9
-
-
-
-
-LD9        latissimus dorsi motor neurons of lamina 9
-
-Pec9      pectoral muscle motor neurons of lamina 9
-
-
-
-
-Tr9         triceps motor neurons of lamina 9
