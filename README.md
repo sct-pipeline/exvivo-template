@@ -25,19 +25,12 @@ TO ADD: minc install
 - 11 - Biceps motor neurons of lamina 9
 - 12 - Supraspinatus and infraspinatus motor neurons of lamina 9
 - 13 - Deltoid motor neurons of lamina 9
+- 14 - Triceps motor neurons of lamina 9
+- 15 - Forearm extensor motor neurons of lamina 9
+- 16 - Forearm flexor motor neurons of lamina 9
+- 17 - Latissimus dorsi motor neurons of lamina 9
+- 18 - Pectoral muscle motor neurons of lamina 9
 
-FEx         forearm extensor motor neurons of lamina 9
+## Contributors
+Charley Gros, [Nyoman Kurniawan](https://cai.centre.uq.edu.au/profile/110/nyoman-kurniawan), Benjamin De Leener, Charles Watson and Julien Cohen-Adad.
 
-FFl          forearm flexor motor neurons of lamina 9
-
-
-
-
-LD9        latissimus dorsi motor neurons of lamina 9
-
-Pec9      pectoral muscle motor neurons of lamina 9
-
-
-
-
-Tr9         triceps motor neurons of lamina 9
