@@ -19,70 +19,20 @@ from sct_download_data import download_data, unzip
 LABEL_REFERENCE = 'C7'
 
 
-labels_regions = {'PMJ': 50, 'PMG': 49,
-                  'C1': 1, 'C2': 2, 'C3': 3, 'C4': 4, 'C5': 5, 'C6': 6, 'C7': 7,
+labels_regions = {'C1': 1, 'C2': 2, 'C3': 3, 'C4': 4, 'C5': 5, 'C6': 6, 'C7': 7,
                   'T1': 8, 'T2': 9, 'T3': 10, 'T4': 11, 'T5': 12, 'T6': 13, 'T7': 14, 'T8': 15, 'T9': 16, 'T10': 17,
                   'T11': 18, 'T12': 19}
 
-regions_labels = {'50': 'PMJ', '49': 'PMG',
-                  '1': 'C1', '2': 'C2', '3': 'C3', '4': 'C4', '5': 'C5', '6': 'C6', '7': 'C7',
+regions_labels = {'1': 'C1', '2': 'C2', '3': 'C3', '4': 'C4', '5': 'C5', '6': 'C6', '7': 'C7',
                   '8': 'T1', '9': 'T2', '10': 'T3', '11': 'T4', '12': 'T5', '13': 'T6', '14': 'T7', '15': 'T8',
                   '16': 'T9', '17': 'T10', '18': 'T11', '19': 'T12'}
 
 list_labels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
 
-# for disks
-#average_spinal_length = {'C5': 14.836197725186745, 'C6': 14.233461369688694, 'C7': 12.70302869264896, 'T1': 11.685781095176935, 'C4': 13.78937483827273, 
-#                            'T2': 11.686249919235706, 'T3': 10.104166666666666, 'C3': 11.171875, 'T4': 12.5}
 # for midLvl
 average_spinal_length = {'C4': 13.990795292637564, 'C5': 15.05151022473971, 'C6': 13.244807532200447, 
     'C7': 12.173846006393433, 'T1': 11.060937374830246, 'T2': 11.745833245416483, 'C3': 11.928437449038029, 
     'T3': 9.713541666666666, 'T4': 12.5}
-
-def download_data_template(path_data='./', name='example', force=False):
-    """
-    This function downloads the example data and return the path where it was downloaded.
-    :param path_data: destination path where to download the data
-    :return: absolute destination path
-    """
-
-    # Download data
-    if name == 'example':
-        data_name = 'data'
-        url = 'https://www.neuro.polymtl.ca/_media/downloads/sct/20181128_example_data_template.zip'
-    elif name == 'icbm152':
-        data_name = 'icbm152'
-        url = 'https://www.neuro.polymtl.ca/_media/downloads/sct/20181128_icbm152.zip'
-    else:
-        raise ValueError('ERROR: data name is wrong. It should be either \'example\' or \'icbm152\'')
-
-    if os.path.isdir(path_data + data_name) and not force:
-        print (os.path.abspath(path_data + data_name) + '/')
-        return os.path.abspath(path_data + data_name) + '/'
-
-    verbose = 2
-    try:
-        tmp_file = download_data(url, verbose)
-    except (KeyboardInterrupt):
-        sct.printv('\nERROR: User canceled process.\n', 1, 'error')
-
-    # Check if folder already exists
-    sct.printv('\nCheck if folder already exists...')
-    if os.path.isdir(path_data + data_name):
-        sct.printv('WARNING: Folder ' + path_data + data_name + ' already exists. Removing it...', 1, 'warning')
-        shutil.rmtree(path_data + data_name, ignore_errors=True)
-
-    # unzip
-    unzip(tmp_file, path_data, verbose)
-
-    sct.printv('\nRemove temporary file...')
-    os.remove(tmp_file)
-
-    absolute_path = os.path.abspath(path_data + data_name) + '/'
-    os.chmod(absolute_path, 0o755)
-
-    return absolute_path
-
 
 def read_dataset(fname_json='configuration.json', path_data='./'):
     """
@@ -202,39 +152,7 @@ def generate_centerline(dataset_info, contrast='t1', regenerate=False):
     return list_centerline
 
 
-def compute_ICBM152_centerline(dataset_info):
-    """
-    This function extracts the centerline from the ICBM152 brain template
-    :param dataset_info: dictionary containing dataset information
-    :return:
-    """
-    path_data = dataset_info['path_data']
-
-    if not os.path.isdir(path_data + 'icbm152/'):
-        download_data_template(path_data=path_data, name='icbm152', force=False)
-
-    image_disks = Image(path_data + 'icbm152/mni_icbm152_t1_tal_nlin_sym_09c_disks_manual.nii.gz')
-    coord = image_disks.getNonZeroCoordinates(sorting='z', reverse_coord=True)
-    coord_physical = []
-
-    for c in coord:
-        if c.value <= 22 or c.value in [48, 49, 50, 51, 52]:  # 22 corresponds to L2
-            c_p = list(image_disks.transfo_pix2phys([[c.x, c.y, c.z]])[0])
-            c_p.append(c.value)
-            coord_physical.append(c_p)
-
-    x_centerline_fit, y_centerline_fit, z_centerline, x_centerline_deriv, y_centerline_deriv, z_centerline_deriv = smooth_centerline(
-        path_data + 'icbm152/mni_icbm152_t1_centerline_manual.nii.gz', algo_fitting='nurbs',
-        verbose=0, nurbs_pts_number=300, all_slices=False, phys_coordinates=True, remove_outliers=False)
-
-    centerline = Centerline(x_centerline_fit, y_centerline_fit, z_centerline,
-                            x_centerline_deriv, y_centerline_deriv, z_centerline_deriv)
-
-    centerline.compute_vertebral_distribution(coord_physical, label_reference=LABEL_REFERENCE)
-    return centerline
-
-
-def average_centerline(list_centerline, dataset_info, use_ICBM152=True, use_label_ref=None):
+def average_centerline(list_centerline, dataset_info, use_label_ref=None):
     """
     This function compute the average centerline and vertebral distribution, that will be used to create the
     final template space.
@@ -243,11 +161,6 @@ def average_centerline(list_centerline, dataset_info, use_ICBM152=True, use_labe
     :return: points_average_centerline: list of points (x, y, z) of the average spinal cord and brainstem centerline
              position_template_disks: index of intervertebral disks along the template centerline
     """
-
-    if use_ICBM152:
-        # extracting centerline from ICBM152
-        centerline_icbm152 = compute_ICBM152_centerline(dataset_info)
-        print(centerline_icbm152.distance_from_C1label)
 
     # extracting distance of each disk from C1 HERE C4
     list_dist_disks = []
@@ -260,21 +173,16 @@ def average_centerline(list_centerline, dataset_info, use_ICBM152=True, use_labe
     length_vertebral_levels = {}
     for dist_disks in list_dist_disks:
         for disk_label in dist_disks:
-            if disk_label == 'PMJ':
-                length = abs(dist_disks[disk_label] - dist_disks['PMG'])
-            elif disk_label == 'PMG':
-                length = abs(dist_disks[disk_label] - dist_disks['C1'])
+            index_current_label = list_labels.index(labels_regions[disk_label])
+            next_label = regions_labels[str(list_labels[index_current_label + 1])]
+            if next_label in dist_disks:
+                length = abs(dist_disks[disk_label] - dist_disks[next_label])
             else:
-                index_current_label = list_labels.index(labels_regions[disk_label])
-                next_label = regions_labels[str(list_labels[index_current_label + 1])]
-                if next_label in dist_disks:
-                    length = abs(dist_disks[disk_label] - dist_disks[next_label])
+                if disk_label in average_spinal_length:
+                    print(disk_label)
+                    length = average_spinal_length[disk_label]
                 else:
-                    if disk_label in average_spinal_length:
-                        print(disk_label)
-                        length = average_spinal_length[disk_label]
-                    else:
-                        length = 0.0
+                    length = 0.0
 
             if disk_label in length_vertebral_levels:
                 length_vertebral_levels[disk_label].append(length)
@@ -294,10 +202,6 @@ def average_centerline(list_centerline, dataset_info, use_ICBM152=True, use_labe
 
     # computing distances of disks from C1, based on average length  HERE C4
     distances_disks_from_C1 = {LABEL_REFERENCE: 0.0}
-    if 'PMG' in average_length:
-        distances_disks_from_C1['PMG'] = -average_length['PMG'][1]
-        if 'PMJ' in average_length:
-            distances_disks_from_C1['PMJ'] = -average_length['PMG'][1] - average_length['PMJ'][1]
     for disk_number in range(labels_regions[LABEL_REFERENCE]+1, max(list_labels)):
         if str(disk_number) in regions_labels and regions_labels[str(disk_number)] in average_length:
             distances_disks_from_C1[regions_labels[str(disk_number)]] = distances_disks_from_C1[regions_labels[str(disk_number - 1)]] + average_length[regions_labels[str(disk_number - 1)]][1]
@@ -332,7 +236,7 @@ def average_centerline(list_centerline, dataset_info, use_ICBM152=True, use_labe
 
         for j in range(number_of_points_between_levels):
             relative_position = float(j) / float(number_of_points_between_levels)
-            if disk_label in list(range(1, labels_regions[LABEL_REFERENCE])):  #['PMJ', 'PMG']:
+            if disk_label in list(range(1, labels_regions[LABEL_REFERENCE])):
                 print(disk_label)
                 relative_position = 1.0 - relative_position
             list_coordinates = [[]] * len(list_centerline)
@@ -359,39 +263,23 @@ def average_centerline(list_centerline, dataset_info, use_ICBM152=True, use_labe
         if label_ref not in length_vertebral_levels:
             raise Exception('ERROR: the reference label passed in argument ' + label_ref + ' should be present in the images.')
     else:
-        if 'PMG' in length_vertebral_levels:
-            label_ref = 'PMG'
-        elif 'C1' in length_vertebral_levels:
+        if 'C1' in length_vertebral_levels:
             label_ref = LABEL_REFERENCE #'C1'
         else:
             raise Exception('ERROR: the images should always have C1 label.')
 
     position_template_disks = {}
 
-    if use_ICBM152:
-        coord_ref = np.copy(centerline_icbm152.points[centerline_icbm152.index_disk[label_ref]])
-        for disk in average_length:
-            if disk in ['C1', 'PMJ', 'PMG']:
-                position_template_disks[disk] = centerline_icbm152.points[centerline_icbm152.index_disk[disk]]
-            else:
-                coord_disk = coord_ref.copy()
-                coord_disk[2] -= average_positions_from_C1[disk] - average_positions_from_C1[label_ref]
-                position_template_disks[disk] = coord_disk
-    else:
-        coord_ref = np.array([0.0, 0.0, 0.0])
-        print(average_positions_from_C1[label_ref])
-        for disk in average_length:
-            coord_disk = coord_ref.copy()
-            coord_disk[2] -= average_positions_from_C1[disk] - average_positions_from_C1[label_ref]
-            position_template_disks[disk] = coord_disk
+    coord_ref = np.array([0.0, 0.0, 0.0])
+    print(average_positions_from_C1[label_ref])
+    for disk in average_length:
+        coord_disk = coord_ref.copy()
+        coord_disk[2] -= average_positions_from_C1[disk] - average_positions_from_C1[label_ref]
+        position_template_disks[disk] = coord_disk
     print('position template_disks')
     print(position_template_disks)
 
-    # change centerline to be straight below reference if using ICBM152
-    if use_ICBM152:
-        index_straight = disk_position_in_centerline[label_ref]
-    else:  # else: straighten every points along centerline
-        index_straight = 0
+    index_straight = 0
 
     points_average_centerline_template = []
     for i in range(0, len(points_average_centerline)):
@@ -410,13 +298,7 @@ def average_centerline(list_centerline, dataset_info, use_ICBM152=True, use_labe
                     temp_point[2] = coord_ref[2] - average_positions_from_C1[current_label] - abs(relative_position_from_disk * (average_positions_from_C1[current_label] - average_positions_from_C1[next_label]))
             points_average_centerline_template.append(temp_point)
 
-    if use_ICBM152:
-        # append ICBM152 centerline from PMG
-        points_icbm152 = centerline_icbm152.points[centerline_icbm152.index_disk[label_ref]:]
-        points_icbm152 = points_icbm152[::-1]
-        points_average_centerline = np.concatenate([points_icbm152, points_average_centerline_template])
-    else:
-        points_average_centerline = points_average_centerline_template
+    points_average_centerline = points_average_centerline_template
 
     return points_average_centerline, position_template_disks
 
