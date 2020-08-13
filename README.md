@@ -47,7 +47,7 @@ source sct_launcher
 python generate_template/pipeline.py
 ```
 
-### Tempalte generation
+### Template generation
 
 To generate the template with N (here N=13) subjects:
 ```
