@@ -9,8 +9,11 @@ Gros, C., Asiri, A., De Leener, B., Watson, C., Cowin, G., Ruitenberg, M., Kurni
 ## Data
 
 The ex-vivo template is available in the `data` folder of this repository. This folder contains:
-- `template.nii.gz`: the ex-vivo template.
-- XX
+- `template.nii.gz`: ex-vivo template.
+- `mask_spinalcord.nii.gz`: binary spinalcord mask.
+- `map_greymatter.nii.gz`: probabilistic grey matter map.
+- `mask_spinalsegments.nii.gz`: mask of spinal segments, the value corresponds to the cervical segment, e.g. voxel value of 5 corresponds to C5 spinal level.
+- `mask_motortracts.nii.gz`: mask of spinal motor tracts, the value corresponds to a specific motor tract, see [Label section](##Labels) for details.
 
 ## Installation
 
