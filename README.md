@@ -8,7 +8,7 @@ Gros, C., Asiri, A., De Leener, B., Watson, C., Cowin, G., Ruitenberg, M., Kurni
 
 ## Data
 
-The ex-vivo template is available in the `data` folder of this repository. This folder contains:
+The ex-vivo template is available in [this repository](https://github.com/sct-data/exvivo-template), which contains:
 - `template.nii.gz`: ex-vivo template.
 - `mask_spinalcord.nii.gz`: binary spinalcord mask.
 - `map_greymatter.nii.gz`: probabilistic grey matter map.
