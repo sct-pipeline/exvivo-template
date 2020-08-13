@@ -13,29 +13,7 @@ The ex-vivo template is available in [this repository](https://github.com/sct-da
 - `mask_spinalcord.nii.gz`: binary spinalcord mask.
 - `map_greymatter.nii.gz`: probabilistic grey matter map.
 - `mask_spinalsegments.nii.gz`: mask of spinal segments, the value corresponds to the cervical segment, e.g. voxel value of 5 corresponds to C5 spinal level.
-- `mask_motortracts.nii.gz`: mask of spinal motor tracts, the value corresponds to a specific motor tract, see [Labels sub-section](#labels) for details.
-
-### Labels
-
-Motor tracts value in `mask_motortracts.nii.gz`:
-- 01 - Anterior corticospinal tract
-- 02 - Central canal
-- 03 - Epaxial motor column
-- 04 - Trapezius and sternomastoid motor neurons of lamina 9
-- 05 - Hypaxial motor column
-- 06 - Lateral corticospinal tract
-- 07 - Lamina 2 of the spinal gray (substantia gelatinosa)
-- 08 - Cuneate fasciculus
-- 09 - Gracile fasciculus
-- 10 - Phrenic motor neurons of lamina 9
-- 11 - Biceps motor neurons of lamina 9
-- 12 - Supraspinatus and infraspinatus motor neurons of lamina 9
-- 13 - Deltoid motor neurons of lamina 9
-- 14 - Triceps motor neurons of lamina 9
-- 15 - Forearm extensor motor neurons of lamina 9
-- 16 - Forearm flexor motor neurons of lamina 9
-- 17 - Latissimus dorsi motor neurons of lamina 9
-- 18 - Pectoral muscle motor neurons of lamina 9
+- `mask_motortracts.nii.gz`: mask of spinal motor tracts, the value corresponds to a specific motor tract, see [Labels sub-section](https://github.com/sct-data/exvivo-template#labels) for details.
 
 ## Installation
 
