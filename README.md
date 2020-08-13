@@ -6,6 +6,12 @@ Repository for generating high resolution ex-vivo MRI template.
 ## How to cite
 Gros, C., Asiri, A., De Leener, B., Watson, C., Cowin, G., Ruitenberg, M., Kurniawan, N., Cohen-Adad, J., 2020. Ex vivo MRI template of the human cervical cord at 80μm isotropic resolution, in: Proceedingsof the 28th Annual Meeting of ISMRM. Presented at the ISMRM.
 
+## Data
+
+The ex-vivo template is available in the `data` folder of this repository. This folder contains:
+- `template.nii.gz`: the ex-vivo template.
+- XX
+
 ## Installation
 
 To install, run:
